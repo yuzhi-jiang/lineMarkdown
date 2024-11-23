@@ -9,7 +9,7 @@ export default function Auth() {
       <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-md">
         <div className="flex flex-col items-center mb-8">
           <img 
-            src="https://avatars.githubusercontent.com/u/45190043?v=4"
+            src="/logo.png"
             alt="Avatar"
             className="w-20 h-20 rounded-full mb-4 border-2 border-blue-500"
           />

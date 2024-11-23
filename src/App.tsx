@@ -13,14 +13,25 @@ import './App.css';
 import MarkdownToolbar from './components/MarkdownToolbar';
 import Header from './components/Header';
 
+/**
+ * App 组件是应用程序的主要入口点
+ * 管理用户会话、文档编辑和预览功能
+ */
 function App() {
+  // 用户会话状态
   const [session, setSession] = useState(null);
+  // 当前选中的文档
   const [currentDocument, setCurrentDocument] = useState<Document | null>(null);
+  // 当前选中的分类ID
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  // 编辑器和预览区域的分割位置(百分比)
   const [splitPosition, setSplitPosition] = useState(50);
+  // 分割条的引用
   const splitDragRef = useRef<HTMLDivElement>(null);
+  // Monaco编辑器的引用
   const monacoRef = useRef<any>(null);
 
+  // 初始化用户会话和监听会话变化
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -35,6 +46,10 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  /**
+   * 处理编辑器内容变化
+   * @param value 新的文档内容
+   */
   const handleEditorChange = async (value: string | undefined) => {
     if (!value || !currentDocument) return;
     
@@ -43,6 +58,7 @@ function App() {
       content: value
     });
 
+    // 更新数据库中的文档内容
     const { error } = await supabase
       .from('documents')
       .update({
@@ -56,6 +72,11 @@ function App() {
     }
   };
 
+  /**
+   * 处理Markdown工具栏的插入操作
+   * @param text 要插入的文本
+   * @param cursorOffset 光标偏移量
+   */
   const handleMarkdownInsert = (text: string, cursorOffset?: number) => {
     if (!currentDocument) return;
     
@@ -65,10 +86,10 @@ function App() {
     const selection = editor.getSelection();
     const position = editor.getPosition();
     
-    // 如果有选中的文本，使用它来替换占位符
+    // 获取当前选中的文本
     const selectedText = editor.getModel().getValueInRange(selection);
     
-    // 根据不同的语法类型处理光标位置
+    // 根据不同的Markdown语法处理插入文本和光标位置
     let finalText = text;
     let cursorPos;
     
@@ -91,6 +112,7 @@ function App() {
       cursorPos = position.column + text.length;
     }
 
+    // 执行编辑操作
     const op = {
       range: selection,
       text: finalText,
@@ -99,7 +121,7 @@ function App() {
     
     editor.executeEdits("my-source", [op]);
     
-    // 设置新的光标位置
+    // 设置新的光标位置并聚焦编辑器
     editor.setPosition({
       lineNumber: position.lineNumber,
       column: cursorPos
@@ -107,6 +129,7 @@ function App() {
     editor.focus();
   };
 
+  // 如果用户未登录，显示登录界面
   if (!session) {
     return (
       <>
@@ -116,26 +139,33 @@ function App() {
     );
   }
 
+  // 主界面布局
   return (
     <>
       <Header />
       
       <div className="h-screen flex flex-col">
         <div className="flex-1 flex min-h-0">
+          {/* 文档列表侧边栏 */}
           <DocumentList
             onSelectDocument={setCurrentDocument}
             currentDocument={currentDocument}
           />
+          {/* 文档编辑区域 */}
           {currentDocument && (
             <div className="flex-1 flex flex-col gap-2 min-h-0 p-4 bg-[#F5F5F0]">
               <div className="space-y-1">
+                {/* 文档标题 */}
                 <DocumentTitle 
                   document={currentDocument} 
                   onUpdate={(updatedDoc) => setCurrentDocument(updatedDoc)}
                 />
+                {/* Markdown工具栏 */}
                 <MarkdownToolbar onInsert={handleMarkdownInsert} />
               </div>
+              {/* 编辑器和预览区域 */}
               <div className="flex gap-4 flex-1 min-h-0">
+                {/* Monaco编辑器 */}
                 <div style={{ width: `${splitPosition}%` }} className="flex-shrink-0 min-h-0 rounded-lg overflow-hidden">
                   <Editor
                     height="100%"
@@ -159,6 +189,7 @@ function App() {
                     }}
                   />
                 </div>
+                {/* Markdown预览区域 */}
                 <div style={{ width: `${100 - splitPosition}%` }} className="flex-shrink-0 min-h-0">
                   <Preview code={currentDocument.content} />
                 </div>

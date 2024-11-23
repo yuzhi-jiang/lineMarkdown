@@ -20,6 +20,8 @@ export default function MarkdownToolbar({ onInsert }: MarkdownToolbarProps) {
         { text: '**', label: 'B' },
         { text: '*', label: 'I' },
         { text: '``', label: '代码' },
+        { text: '```', label: '代码块' },
+        { text: '~~', label: '删除线' },
       ]
     },
     {
