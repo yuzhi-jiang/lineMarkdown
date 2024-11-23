@@ -38,7 +38,6 @@ npm install
 2. 配置环境变量
 修改 .env.example 文件名为 .env.local ，并配置你的 Supabase 信息：
 
-
 在 .env.local 文件中配置你的 Supabase 信息：
 ```env
 VITE_SUPABASE_URL=your-supabase-url
@@ -50,6 +49,13 @@ VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 npm run dev
 ```
 
+### 使用 Vercel 部署
+
+点击下面的按钮一键部署到 Vercel：
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyuzhi-jiang%2FlineMarkdown)
+
+> 注意：部署后需要在 Vercel 项目设置中配置环境变量 VITE_SUPABASE_URL 和 VITE_SUPABASE_ANON_KEY
 
 ## 🔧 技术栈
 
