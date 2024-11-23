@@ -92,8 +92,10 @@ function App() {
     // 根据不同的Markdown语法处理插入文本和光标位置
     let finalText = text;
     let cursorPos;
-    
-    if (text.includes('``')) {
+    if(text.includes('```')){
+      finalText = '```';
+      cursorPos = position.column + 3;
+    }else if (text.includes('``')) {
       finalText = '``';
       cursorPos = position.column + 1;
     } else if (text.includes('**')) {
