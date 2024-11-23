@@ -50,7 +50,7 @@ export default function DocumentList({ onSelectDocument, currentDocument }: Docu
     if (!user.user) return;
 
     // 获取所有分类
-    const { data: categories } = await supabase
+    let { data: categories } = await supabase
       .from('categories')
       .select('*')
       .eq('user_id', user.user.id)
@@ -62,7 +62,24 @@ export default function DocumentList({ onSelectDocument, currentDocument }: Docu
       .select('*')
       .eq('user_id', user.user.id)
       .order('updated_at', { ascending: false });
+    // 如果没有分类，创建一个默认分类
+    if (!categories || categories.length === 0) {
+      const { data: defaultCategory, error } = await supabase
+        .from('categories')
+        .insert([{
+          name: '默认分类',
+          user_id: user.user.id,
+          parent_id: null
+        }])
+        .select()
+        .single();
 
+      if (error) {
+        console.error('创建默认分类失败:', error);
+      } else {
+        categories = [defaultCategory];
+      }
+    }
     if (categories && documents) {
       const tree = buildTree(categories, documents);
       setTreeData(tree);
