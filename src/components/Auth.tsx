@@ -7,7 +7,15 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">欢迎使用 PicLiveCode</h1>
+        <div className="flex flex-col items-center mb-8">
+          <img 
+            src="https://avatars.githubusercontent.com/u/45190043?v=4"
+            alt="Avatar"
+            className="w-20 h-20 rounded-full mb-4 border-2 border-blue-500"
+          />
+          <h1 className="text-2xl font-bold text-center">欢迎使用 Markdown Editor Pro</h1>
+          <p className="text-gray-600 mt-2">登录以开始使用</p>
+        </div>
         <SupabaseAuth 
           supabaseClient={supabase}
           appearance={{ 
