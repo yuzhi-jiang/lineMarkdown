@@ -42,28 +42,41 @@ export default function DocumentTitle({ document, onUpdate }: DocumentTitleProps
 
   if (isEditing) {
     return (
-      <form onSubmit={handleSubmit} className="flex items-center gap-2">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="px-2 py-1 border rounded"
-          autoFocus
-          onBlur={() => setIsEditing(false)}
-        />
-        <button type="submit" className="text-blue-500 hover:text-blue-600">
-          Save
-        </button>
-      </form>
+      <div className="w-full bg-[#F2F3F5] p-4 mb-4 rounded-lg">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="flex-1 px-2 py-1 border rounded bg-white"
+            autoFocus
+          />
+          <button 
+            type="submit" 
+            className="text-blue-500 hover:text-blue-600 px-3 py-1 rounded border border-blue-500"
+          >
+            保存
+          </button>
+          <button 
+            type="button" 
+            onClick={() => setIsEditing(false)}
+            className="text-gray-500 hover:text-gray-600 px-3 py-1 rounded border border-gray-500"
+          >
+            取消
+          </button>
+        </form>
+      </div>
     );
   }
 
   return (
-    <h1 
-      onClick={() => setIsEditing(true)}
-      className="text-xl font-bold cursor-pointer hover:text-gray-700"
-    >
-      {document.title}
-    </h1>
+    <div className="w-full bg-[#F2F3F5] p-4 mb-4 rounded-lg">
+      <h1 
+        onClick={() => setIsEditing(true)}
+        className="text-xl font-bold cursor-pointer hover:text-gray-700"
+      >
+        {document.title}
+      </h1>
+    </div>
   );
 }
