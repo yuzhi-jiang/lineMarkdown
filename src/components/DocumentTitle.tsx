@@ -17,9 +17,13 @@ export default function DocumentTitle({ document, onUpdate }: DocumentTitleProps
     setTitle(document.title);
   }, [document.title]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSave = async () => {
+    console.log('handleSave', title);
+    if (title === document.title) {
+      setIsEditing(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('documents')
       .update({ title, updated_at: new Date().toISOString() })
@@ -28,13 +32,13 @@ export default function DocumentTitle({ document, onUpdate }: DocumentTitleProps
       .single();
 
     if (error) {
-      toast.error('Failed to update title');
+      toast.error('保存失败');
       return;
     }
 
     if (data) {
       onUpdate(data);
-      toast.success('Title updated');
+      toast.success('标题已更新');
     }
     
     setIsEditing(false);
@@ -43,28 +47,15 @@ export default function DocumentTitle({ document, onUpdate }: DocumentTitleProps
   if (isEditing) {
     return (
       <div className="w-full bg-[#F2F3F5] p-4 mb-4 rounded-lg">
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="flex-1 px-2 py-1 border rounded bg-white"
-            autoFocus
-          />
-          <button 
-            type="submit" 
-            className="text-blue-500 hover:text-blue-600 px-3 py-1 rounded border border-blue-500"
-          >
-            保存
-          </button>
-          <button 
-            type="button" 
-            onClick={() => setIsEditing(false)}
-            className="text-gray-500 hover:text-gray-600 px-3 py-1 rounded border border-gray-500"
-          >
-            取消
-          </button>
-        </form>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onBlur={handleSave}
+          className="w-full px-2 py-1 text-lg font-medium bg-transparent border-0 focus:outline-none focus:ring-0"
+          placeholder="未命名文档"
+          autoFocus
+        />
       </div>
     );
   }

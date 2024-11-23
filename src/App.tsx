@@ -119,6 +119,7 @@ function App() {
   return (
     <>
       <Header />
+      
       <div className="h-screen flex flex-col">
         <div className="flex-1 flex min-h-0">
           <DocumentList
@@ -126,32 +127,41 @@ function App() {
             currentDocument={currentDocument}
           />
           {currentDocument && (
-            <div className="flex-1 flex gap-4 min-h-0 p-4 bg-[#F5F5F0]">
-              <div style={{ width: `${splitPosition}%` }} className="flex-shrink-0 min-h-0 rounded-lg overflow-hidden">
-                <Editor
-                  height="100%"
-                  defaultLanguage="markdown"
-                  value={currentDocument.content}
-                  onChange={handleEditorChange}
-                  theme="vs-dark"
-                  options={{
-                    minimap: { enabled: false },
-                    scrollbar: {
-                      vertical: 'visible',
-                      horizontal: 'visible',
-                      verticalScrollbarSize: 6,
-                      horizontalScrollbarSize: 6,
-                      verticalSliderSize: 6,
-                      horizontalSliderSize: 6
-                    }
-                  }}
-                  onMount={(editor) => {
-                    monacoRef.current = editor;
-                  }}
+            <div className="flex-1 flex flex-col gap-2 min-h-0 p-4 bg-[#F5F5F0]">
+              <div className="space-y-1">
+                <DocumentTitle 
+                  document={currentDocument} 
+                  onUpdate={(updatedDoc) => setCurrentDocument(updatedDoc)}
                 />
+                <MarkdownToolbar onInsert={handleMarkdownInsert} />
               </div>
-              <div style={{ width: `${100 - splitPosition}%` }} className="flex-shrink-0 min-h-0">
-                <Preview code={currentDocument.content} />
+              <div className="flex gap-4 flex-1 min-h-0">
+                <div style={{ width: `${splitPosition}%` }} className="flex-shrink-0 min-h-0 rounded-lg overflow-hidden">
+                  <Editor
+                    height="100%"
+                    defaultLanguage="markdown"
+                    value={currentDocument.content}
+                    onChange={handleEditorChange}
+                    theme="vs-dark"
+                    options={{
+                      minimap: { enabled: false },
+                      scrollbar: {
+                        vertical: 'visible',
+                        horizontal: 'visible',
+                        verticalScrollbarSize: 6,
+                        horizontalScrollbarSize: 6,
+                        verticalSliderSize: 6,
+                        horizontalSliderSize: 6
+                      }
+                    }}
+                    onMount={(editor) => {
+                      monacoRef.current = editor;
+                    }}
+                  />
+                </div>
+                <div style={{ width: `${100 - splitPosition}%` }} className="flex-shrink-0 min-h-0">
+                  <Preview code={currentDocument.content} />
+                </div>
               </div>
             </div>
           )}
