@@ -55,13 +55,6 @@ export default function DocumentList({ onSelectDocument, currentDocument }: Docu
       .select('*')
       .eq('user_id', user.user.id)
       .order('path');
-
-    // 获取所有文档
-    const { data: documents } = await supabase
-      .from('documents')
-      .select('*')
-      .eq('user_id', user.user.id)
-      .order('updated_at', { ascending: false });
     // 如果没有分类，创建一个默认分类
     if (!categories || categories.length === 0) {
       const { data: defaultCategory, error } = await supabase
@@ -80,6 +73,33 @@ export default function DocumentList({ onSelectDocument, currentDocument }: Docu
         categories = [defaultCategory];
       }
     }
+    // 获取所有文档
+    let { data: documents } = await supabase
+      .from('documents')
+      .select('*')
+      .eq('user_id', user.user.id)
+      .order('updated_at', { ascending: false });
+
+    // 如果没有文档,创建一个默认文档
+    if (!documents || documents.length === 0&&categories && categories[0]) {
+      const { data: defaultDocument, error } = await supabase
+        .from('documents')
+        .insert([{
+          title: '欢迎使用',
+          content: '# 欢迎使用 Markdown 编辑器\n\n这是一个功能强大的在线 Markdown 编辑器。\n\n## 主要功能\n\n- 实时预览\n- 语法高亮\n- 数学公式\n- 流程图\n- 文档管理\n\n开始编写你的第一篇文档吧!',
+          user_id: user.user.id,
+          category_id: categories![0].id
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('创建默认文档失败:', error);
+      } else {
+        documents = [defaultDocument];
+      }
+    }
+    
     if (categories && documents) {
       const tree = buildTree(categories, documents);
       setTreeData(tree);
