@@ -12,12 +12,48 @@ import toast from 'react-hot-toast';
 import './App.css';
 import MarkdownToolbar from './components/MarkdownToolbar';
 import Header from './components/Header';
+import ResetPassword from './components/ResetPassword';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { UserProvider } from './contexts/UserContext';
+import ChangePassword from './pages/ChangePassword';
+// 路由配置
+const AppRoutes = () => {
+  return (
+    <Routes>
+      <Route path="/login" element={<Auth />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/change-password" element={<ChangePassword />} />
+      {/* <Route path="/" element={<ProtectedRoute><App /></ProtectedRoute>} /> */}
+      <Route path="/" element={<App />} />
+    </Routes>
+  );
+};
+
+// 受保护的路由组件
+// const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+//   const [session, setSession] = useState(null);
+
+//   useEffect(() => {
+//     supabase.auth.getSession().then(({ data: { session } }) => {
+//       console.log('session', session);
+//       setSession(session);
+//     });
+//   }, []);
+
+//   if (!session) {
+//     return <Navigate to="/login" />;
+//   }
+
+//   return <>{children}</>;
+// };
 
 /**
  * App 组件是应用程序的主要入口点
  * 管理用户会话、文档编辑和预览功能
  */
 function App() {
+  const navigate = useNavigate();
   // 用户会话状态
   const [session, setSession] = useState(null);
   // 当前选中的文档
@@ -39,12 +75,18 @@ function App() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
+      if (event === "PASSWORD_RECOVERY") {
+        navigate('/reset-password');
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+
+   
 
   /**
    * 处理编辑器内容变化
@@ -204,4 +246,14 @@ function App() {
   );
 }
 
-export default App;
+function AppWrapper() {
+  return (
+    <Router>
+      <UserProvider>
+        <AppRoutes />
+      </UserProvider>
+    </Router>
+  );
+}
+
+export default AppWrapper;

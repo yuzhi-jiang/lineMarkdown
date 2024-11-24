@@ -1,52 +1,18 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { UserProfile } from '../types';
+import { useState } from 'react';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
-import * as React from 'react';
+import { useUser } from '../contexts/UserContext';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const { profile, updateProfile, signOut } = useUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [fullName, setFullName] = useState('');
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  useEffect(() => {
-    if (profile?.full_name) {
-      setFullName(profile.full_name);
-    }
-  }, [profile?.full_name]);
-
-  const fetchProfile = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    if (!error && data) {
-      setProfile(data);
-    }
-  };
+  const [fullName, setFullName] = useState(profile?.full_name || '');
 
   const handleUpdateProfile = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({ 
-        full_name: fullName,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', user.id);
-
+    const error = await updateProfile({ full_name: fullName });
+    
     if (error) {
       toast.error('更新失败');
       return;
@@ -54,11 +20,6 @@ export default function Header() {
 
     toast.success('更新成功');
     setIsEditing(false);
-    fetchProfile();
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
   };
 
   return (
@@ -106,8 +67,16 @@ export default function Header() {
               </button>
             </div>
           )}
+          
+          <Link
+            to="/change-password"
+            className="text-sm text-gray-600 hover:text-gray-900"
+          >
+            修改密码
+          </Link>
+          
           <button
-            onClick={handleSignOut}
+            onClick={signOut}
             className="text-sm text-gray-600 hover:text-gray-900"
           >
             退出登录

@@ -20,7 +20,7 @@ export default function MarkdownToolbar({ onInsert }: MarkdownToolbarProps) {
         { text: '**', label: 'B' },
         { text: '*', label: 'I' },
         { text: '``', label: '代码' },
-        { text: '``````', label: '代码块' },
+        { text: '```', label: '代码块' },
         { text: '~~', label: '删除线' },
       ]
     },
@@ -37,7 +37,7 @@ export default function MarkdownToolbar({ onInsert }: MarkdownToolbarProps) {
         { text: '> ', label: '引用' },
         { text: '[]', label: '链接' },
         { text: '![]', label: '图片' },
-        { text: '---\n', label: '分割线' },
+        { text: '\n---\n', label: '分割线' },
       ]
     },
     {
