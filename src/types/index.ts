@@ -26,3 +26,13 @@ export interface Document {
   created_at: string;
   updated_at: string;
 }
+
+export interface ShareSettings {
+  id?: string;
+  document_id: string;
+  share_id: string;
+  is_public: boolean;
+  password: string | null;
+  expiry_date: string | null;
+  created_at: string;
+}

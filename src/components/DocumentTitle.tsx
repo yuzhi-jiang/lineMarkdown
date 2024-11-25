@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Document } from '../types';
 import toast from 'react-hot-toast';
+import { ShareIcon } from '@heroicons/react/24/outline';
+import ShareDialog from './ShareDialog';
 
 interface DocumentTitleProps {
   document: Document;
@@ -12,6 +14,7 @@ interface DocumentTitleProps {
 export default function DocumentTitle({ document, onUpdate }: DocumentTitleProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(document.title);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   useEffect(() => {
     setTitle(document.title);
@@ -62,12 +65,27 @@ export default function DocumentTitle({ document, onUpdate }: DocumentTitleProps
 
   return (
     <div className="w-full bg-[#F2F3F5] p-4 mb-4 rounded-lg">
-      <h1 
-        onClick={() => setIsEditing(true)}
-        className="text-xl font-bold cursor-pointer hover:text-gray-700"
-      >
-        {document.title}
-      </h1>
+      <div className="flex items-center gap-2">
+        <h1 
+          onClick={() => setIsEditing(true)}
+          className="text-xl font-bold cursor-pointer hover:text-gray-700"
+        >
+          {document.title}
+        </h1>
+        <button
+          onClick={() => setIsShareDialogOpen(true)}
+          className="p-1 hover:bg-gray-100 rounded"
+          title="分享文档"
+        >
+          <ShareIcon className="w-5 h-5" />
+        </button>
+      </div>
+
+      <ShareDialog
+        document={document}
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+      />
     </div>
   );
 }

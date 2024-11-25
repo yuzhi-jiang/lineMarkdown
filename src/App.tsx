@@ -17,6 +17,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useNavigate } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext';
 import ChangePassword from './pages/ChangePassword';
+import SharedDocument from './pages/SharedDocument';
 // 路由配置
 const AppRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Auth />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/share/:shareId" element={<SharedDocument />} />
       {/* <Route path="/" element={<ProtectedRoute><App /></ProtectedRoute>} /> */}
       <Route path="/" element={<App />} />
     </Routes>
