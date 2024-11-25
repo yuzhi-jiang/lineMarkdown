@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import Preview from '../components/Preview';
 import { toast, Toaster } from 'react-hot-toast';
 import React from 'react';
+import Header from '../components/Header';
 export default function SharedDocument() {
   const { shareId } = useParams();
   const [document, setDocument] = useState(null);
@@ -58,7 +59,7 @@ export default function SharedDocument() {
     try {
       const { data: shareSettings, error } = await supabase
         .from('share_settings')
-        .select('*, documents(*)')
+        .select('*, documents(id, title, content)')
         .eq('share_id', shareId)
         .eq('password', password)
         .single();
@@ -123,6 +124,7 @@ export default function SharedDocument() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <Toaster position="top-center" />
+      <Header />
       <h1 className="text-2xl font-bold mb-6">{document.title}</h1>
       <Preview code={document.content || ''} />
     </div>

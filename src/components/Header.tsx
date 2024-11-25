@@ -31,8 +31,10 @@ export default function Header() {
         </div>
         
         <div className="flex items-center gap-4">
-          {isEditing ? (
-            <div className="flex items-center gap-2">
+          {profile && (
+            <>
+              {isEditing ? (
+                <div className="flex items-center gap-2">
               <input
                 type="text"
                 value={fullName}
@@ -65,22 +67,27 @@ export default function Header() {
               >
                 <PencilIcon className="w-4 h-4 text-gray-500" />
               </button>
-            </div>
+              </div>
+            )}
+          </>
           )}
-          
-          <Link
-            to="/change-password"
-            className="text-sm text-gray-600 hover:text-gray-900"
-          >
-            修改密码
-          </Link>
-          
-          <button
-            onClick={signOut}
-            className="text-sm text-gray-600 hover:text-gray-900"
-          >
-            退出登录
-          </button>
+          {profile && (
+            <>
+              <Link
+                to="/change-password"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                修改密码
+              </Link>
+           <button
+           onClick={signOut}
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                退出登录
+              </button>
+            </>
+          )}
+
         </div>
       </div>
     </header>
